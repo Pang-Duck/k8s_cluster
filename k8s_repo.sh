@@ -1,7 +1,8 @@
 #!/bin/bash
 
 # package install
-dnf install -y vim
+dnf update
+dnf install -y vim && dnf install -y yum-utils && dnf install -y containerd.io
 
 # disable firewalld & selinux
 systemctl stop firewalld && systemctl disable firewalld
@@ -13,4 +14,21 @@ swapoff -a
 sed -i -e '/swap/d' /etc/fstab
 systemctl daemon-reload
 
-# kubernetes repo
+# kernel mode config
+cat <<EOF | sudo tee /etc/modules-load.d/containerd.conf
+overlay
+br_netfilter
+EOF
+
+modprobe overlay
+modprobe br_netfilter
+
+cat <<EOF | sudo tee /etc/sysctl.d/99-kubernetes-cri.conf
+net.bridge.bridge-nf-call-iptables  = 1
+net.ipv4.ip_forward                 = 1
+net.bridge.bridge-nf-call-ip6tables = 1
+EOF
+
+sysctl --system
+
+# add repository
