@@ -1,8 +1,10 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # package install
+
+dnf-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
 dnf update
-dnf install -y vim && dnf install -y yum-utils && dnf install -y containerd.io
+dnf install -y vim && dnf install -y dnf-utils && dnf install -y containerd.io
 
 # disable firewalld & selinux
 systemctl stop firewalld && systemctl disable firewalld
@@ -14,7 +16,9 @@ swapoff -a
 sed -i -e '/swap/d' /etc/fstab
 systemctl daemon-reload
 
-# kernel mode config
+# add repository
+
+# kernel mode setting
 cat <<EOF | sudo tee /etc/modules-load.d/containerd.conf
 overlay
 br_netfilter
@@ -30,5 +34,3 @@ net.bridge.bridge-nf-call-ip6tables = 1
 EOF
 
 sysctl --system
-
-# add repository
