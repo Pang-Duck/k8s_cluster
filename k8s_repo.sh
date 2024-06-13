@@ -1,10 +1,14 @@
 #!/usr/bin/env bash
 
-# package install
+# hosts
 
-dnf-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-dnf update
-dnf install -y vim && dnf install -y dnf-utils && dnf install -y containerd.io
+cat <<EOF >>/etc/hosts
+10.60.200.60 acc-master1
+10.60.200.61 acc-master2
+10.60.200.62 acc-master3
+10.60.200.63 acc-worker1
+10.60.200.64 acc-loadbalancer
+EOF
 
 # disable firewalld & selinux
 systemctl stop firewalld && systemctl disable firewalld
@@ -16,7 +20,27 @@ swapoff -a
 sed -i -e '/swap/d' /etc/fstab
 systemctl daemon-reload
 
-# add repository
+# package install & add repo
+
+dnf-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+
+cat <<EOF >/etc/yum.repos.d/kubernetes.repo
+[kubernetes]
+name=Kubernetes
+baseurl=https://pkgs.k8s.io/core:/stable:/v1.28/rpm/
+enabled=1
+gpgcheck=1
+gpgkey=https://pkgs.k8s.io/core:/stable:/v1.28/rpm/repodata/repomd.xml.key
+exclude=kubelet kubeadm kubectl cri-tools kubernetes-cni
+EOF
+
+dnf update
+#dnf install -y vim && dnf install -y dnf-utils && dnf install -y containerd.io && dnf install -y nfs-utils
+dnf install -y vim dnf-utils containerd.io nfs-utils curl kubeadm kubelet kubectl
+containerd config default >/etc/containerd/config.toml
+
+systemctl daemon-reload
+systemctl enable containerd
 
 # kernel mode setting
 cat <<EOF | sudo tee /etc/modules-load.d/containerd.conf
