@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# hosts
+# hosts config
 
 cat <<EOF >>/etc/hosts
 10.60.200.60 acc-master1
@@ -20,7 +20,7 @@ swapoff -a
 sed -i -e '/swap/d' /etc/fstab
 systemctl daemon-reload
 
-# package install & add repo
+# addrepo & package install
 
 dnf-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
 
@@ -35,8 +35,7 @@ exclude=kubelet kubeadm kubectl cri-tools kubernetes-cni
 EOF
 
 dnf update
-#dnf install -y vim && dnf install -y dnf-utils && dnf install -y containerd.io && dnf install -y nfs-utils
-dnf install -y vim dnf-utils containerd.io nfs-utils curl kubeadm kubelet kubectl
+dnf install -y vim dnf-utils containerd.io nfs-utils curl bash-completion podman kubeadm kubelet kubectl
 containerd config default >/etc/containerd/config.toml
 
 systemctl daemon-reload
@@ -51,6 +50,7 @@ EOF
 modprobe overlay
 modprobe br_netfilter
 
+# network bridge setting
 cat <<EOF | sudo tee /etc/sysctl.d/99-kubernetes-cri.conf
 net.bridge.bridge-nf-call-iptables  = 1
 net.ipv4.ip_forward                 = 1
@@ -58,3 +58,12 @@ net.bridge.bridge-nf-call-ip6tables = 1
 EOF
 
 sysctl --system
+
+# kubectl auto complete
+cat <<EOF >>~/.bashrc
+source <(kubectl competion bash)
+alias k=kubectl
+complete -o default __start_kubectl k
+EOF
+
+source ~/.bashrc
