@@ -33,7 +33,8 @@ gpgkey=https://pkgs.k8s.io/core:/stable:/v1.28/rpm/repodata/repomd.xml.key
 exclude=kubelet kubeadm kubectl cri-tools kubernetes-cni
 EOF
 dnf install -y kubeadm kubelet kubectl --disableexcludes=kubernetes
-dnf install -y epel-release vim yum-utils containerd.io nfs-utils curl bash-completion wget
+dnf install -y epel-release vim yum-utils nfs-utils curl bash-completion wget
+#dnf install -y containerd.io
 dnf install -y podman --allowerasing
 #containerd config default >/etc/containerd/config.toml
 systemctl daemon-reload
