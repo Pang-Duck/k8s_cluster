@@ -34,12 +34,13 @@ exclude=kubelet kubeadm kubectl cri-tools kubernetes-cni
 EOF
 dnf install -y kubeadm kubelet kubectl --disableexcludes=kubernetes
 dnf install -y epel-release vim yum-utils nfs-utils curl bash-completion wget
-#dnf install -y containerd.io
-dnf install -y podman --allowerasing
-#containerd config default >/etc/containerd/config.toml
+dnf install -y containerd.io
+#dnf install -y podman --allowerasing
+containerd config default >/etc/containerd/config.toml
+sed -i 's/ SystemdCgroup = false/ SystemdCgroup = true/' /etc/containerd/config.toml
 systemctl daemon-reload
-#systemctl enable containerd
-#systmectl start containerd
+systemctl enable containerd
+systmectl start containerd
 systemctl enable kubelet
 
 # kernel mode setting
