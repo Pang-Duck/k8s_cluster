@@ -22,9 +22,8 @@ systemctl daemon-reload
 
 # addrepo & package install
 
-dnf-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-
-cat <<EOF >/etc/yum.repos.d/kubernetes.repo
+dnf config-manager --add-repo=https://download.docker.com/linux/centos/docker-ce.repo
+cat <<EOF | sudo tee /etc/yum.repos.d/kubernetes.repo
 [kubernetes]
 name=Kubernetes
 baseurl=https://pkgs.k8s.io/core:/stable:/v1.28/rpm/
@@ -33,25 +32,25 @@ gpgcheck=1
 gpgkey=https://pkgs.k8s.io/core:/stable:/v1.28/rpm/repodata/repomd.xml.key
 exclude=kubelet kubeadm kubectl cri-tools kubernetes-cni
 EOF
-
-dnf update
-dnf install -y vim dnf-utils containerd.io nfs-utils curl bash-completion podman kubeadm kubelet kubectl
-containerd config default >/etc/containerd/config.toml
-
+dnf install -y kubeadm kubelet kubectl --disableexcludes=kubernetes
+dnf install -y epel-release vim yum-utils containerd.io nfs-utils curl bash-completion wget
+dnf install -y podman --allowerasing
+#containerd config default >/etc/containerd/config.toml
 systemctl daemon-reload
-systemctl enable containerd
+#systemctl enable containerd
+#systmectl start containerd
+systemctl enable kubelet
 
 # kernel mode setting
-cat <<EOF | sudo tee /etc/modules-load.d/containerd.conf
+cat <<EOF | tee /etc/modules-load.d/containerd.conf
 overlay
 br_netfilter
 EOF
-
 modprobe overlay
 modprobe br_netfilter
 
 # network bridge setting
-cat <<EOF | sudo tee /etc/sysctl.d/99-kubernetes-cri.conf
+cat <<EOF | tee /etc/sysctl.d/kubernetes.conf
 net.bridge.bridge-nf-call-iptables  = 1
 net.ipv4.ip_forward                 = 1
 net.bridge.bridge-nf-call-ip6tables = 1
@@ -61,9 +60,9 @@ sysctl --system
 
 # kubectl auto complete
 cat <<EOF >>~/.bashrc
-source <(kubectl competion bash)
+source <(kubectl completion bash)
 alias k=kubectl
 complete -o default __start_kubectl k
+source /usr/share/bash-completion/bash_completion
 EOF
-
 source ~/.bashrc
