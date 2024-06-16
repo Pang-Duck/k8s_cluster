@@ -20,7 +20,7 @@ swapoff -a
 sed -i -e '/swap/d' /etc/fstab
 systemctl daemon-reload
 
-# addrepo & package install
+# addrepo & packages install
 
 dnf config-manager --add-repo=https://download.docker.com/linux/centos/docker-ce.repo
 cat <<EOF | sudo tee /etc/yum.repos.d/kubernetes.repo
