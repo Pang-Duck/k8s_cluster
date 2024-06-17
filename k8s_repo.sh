@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+# test
 # hosts config
 
 cat <<EOF >>/etc/hosts
