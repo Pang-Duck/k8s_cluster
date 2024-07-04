@@ -1,14 +1,15 @@
 #!/usr/bin/env bash
+# file-name: k8s_repo.sh
 
-# test
 # hosts config
 
 cat <<EOF >>/etc/hosts
-10.60.200.60 acc-master1
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+10.60.200.60 acc-master1 
 10.60.200.61 acc-master2
 10.60.200.62 acc-master3
-10.60.200.63 acc-worker1
-10.60.200.64 acc-loadbalancer
+10.60.200.63 acc-node1
 EOF
 
 # disable firewalld & selinux
