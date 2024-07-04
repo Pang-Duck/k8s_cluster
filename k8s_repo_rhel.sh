@@ -43,7 +43,7 @@ containerd config default >/etc/containerd/config.toml
 sed -i 's/ SystemdCgroup = false/ SystemdCgroup = true/' /etc/containerd/config.toml
 systemctl daemon-reload
 systemctl enable containerd
-systmectl restart containerd
+systemctl restart containerd
 systemctl enable kubelet
 
 # kernel mode setting
