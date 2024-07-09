@@ -60,6 +60,9 @@ net.ipv4.ip_forward                 = 1
 net.bridge.bridge-nf-call-ip6tables = 1
 EOF
 
+echo "net.ipv4.ip_nonlocal_bind=1" >>/etc/sysctl.conf
+echo "net.ipv4.ip_forward=1" >>/etc/sysctl.conf
+
 sysctl --system
 
 # kubectl auto complete
