@@ -7,7 +7,8 @@ API_SERVER="https://kubernetes.default.api:6443"
 TOKEN="YOUR_TOKEN"
 
 # API 서버 상태 확인
-STATUS_CODE=$(curl -k -H "Authorization: Bearer $TOKEN" -X GET $API_SERVER/livez)
+#STATUS_CODE=$(curl -k -H "Authorization: Bearer $TOKEN" -X GET $API_SERVER/livez)
+STATUS_CODE=$(curl -k -X GET $API_SERVER/livez)
 
 # healthz는 depracted되었기 때문에 readyz, livez 사용
 
