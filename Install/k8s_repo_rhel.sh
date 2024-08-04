@@ -6,10 +6,10 @@
 cat <<EOF >/etc/hosts
 127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
 ::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
-10.60.200.60 acc-master1 
-10.60.200.61 acc-master2
-10.60.200.62 acc-master3
-10.60.200.63 acc-node1
+10.60.200.60 k8s-master1 
+10.60.200.61 k8s-master2
+10.60.200.62 k8s-master3
+10.60.200.63 k8s-node1
 EOF
 
 # disable firewalld & selinux
