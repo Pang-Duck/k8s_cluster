@@ -73,3 +73,5 @@ complete -o default __start_kubectl k
 source /usr/share/bash-completion/bash_completion
 EOF
 source ~/.bashrc
+
+test
